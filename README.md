@@ -116,11 +116,4 @@ $ python3 main.py --alg=vdn --cuda=True --evaluate=True
     self.optimizer.zero_grad(set_to_none=True)
     agent choose_action时，with torch.no_grad():    
 
-
-
-
 ```
-"# hanabi_master" 
-"# hanabi_master" 
-#   h a n a b i _ m a s t e r  
- 
