@@ -115,14 +115,12 @@ $ python3 main.py --alg=vdn --cuda=True --evaluate=True
 13. map=hanabi  player=3     
 14. runner 添加 time_cost
     self.optimizer.zero_grad(set_to_none=True)
-    agent choose_action时，with torch.no_grad():    
+    agent choose_action时，with torch.no_grad(): 
+
+-- qmix:
+1.  rnn_hidden_dim = 512, n_episodes = train_steps = 10, buffer_size = 500
 
 
 
 
 ```
-"# hanabi_master" 
-"# hanabi_master" 
-#   h a n a b i _ m a s t e r 
- 
- 
