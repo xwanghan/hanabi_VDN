@@ -3,6 +3,7 @@
 ```shell
 $ python3 main.py --alg=vdn --cuda=True
 $ python3 main.py --alg=maven --cuda=True
+$ python3 main.py --alg=qmix --cuda=True
 ```
 ```shell
 $ python3 main.py --alg=vdn --cuda=True --evaluate=True
@@ -122,5 +123,6 @@ $ python3 main.py --alg=vdn --cuda=True --evaluate=True
 ```
 "# hanabi_master" 
 "# hanabi_master" 
-#   h a n a b i _ m a s t e r  
+#   h a n a b i _ m a s t e r 
+ 
  

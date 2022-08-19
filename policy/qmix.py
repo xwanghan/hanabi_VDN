@@ -48,6 +48,8 @@ class QMIX:
         self.eval_parameters = list(self.eval_qmix_net.parameters()) + list(self.eval_rnn.parameters())
         if args.optimizer == "RMS":
             self.optimizer = torch.optim.RMSprop(self.eval_parameters, lr=args.lr)
+        if args.optimizer == "Adam":
+            self.optimizer = torch.optim.Adam(self.eval_parameters, lr=args.lr, eps=1.5e-05)
 
         # 执行过程中，要为每个agent都维护一个eval_hidden
         # 学习过程中，要为每个episode的每个agent都维护一个eval_hidden、target_hidden
@@ -100,6 +102,8 @@ class QMIX:
 
         # 不能直接用mean，因为还有许多经验是没用的，所以要求和再比真实的经验数，才是真正的均值
         loss = (masked_td_error ** 2).sum() / mask.sum()
+        loss_float = loss.clone().detach()
+        loss_float = float(loss_float)
         self.optimizer.zero_grad()
         loss.backward()
         torch.nn.utils.clip_grad_norm_(self.eval_parameters, self.args.grad_norm_clip)
@@ -108,6 +112,8 @@ class QMIX:
         if train_step > 0 and train_step % self.args.target_update_cycle == 0:
             self.target_rnn.load_state_dict(self.eval_rnn.state_dict())
             self.target_qmix_net.load_state_dict(self.eval_qmix_net.state_dict())
+
+        return loss_float
 
     def _get_inputs(self, batch, transition_idx):
         # 取出所有episode上该transition_idx的经验，u_onehot要取出所有，因为要用到上一条
@@ -163,8 +169,8 @@ class QMIX:
 
     def init_hidden(self, episode_num):
         # 为每个episode中的每个agent都初始化一个eval_hidden、target_hidden
-        self.eval_hidden = torch.zeros((episode_num, self.n_agents, self.args.rnn_hidden_dim))
-        self.target_hidden = torch.zeros((episode_num, self.n_agents, self.args.rnn_hidden_dim))
+        self.eval_hidden = torch.zeros((self.args.rnn_layer, episode_num, self.n_agents, self.args.rnn_hidden_dim))
+        self.target_hidden = torch.zeros((self.args.rnn_layer, episode_num, self.n_agents, self.args.rnn_hidden_dim))
 
     def save_model(self, train_step):
         num = str(train_step // self.args.save_cycle)
